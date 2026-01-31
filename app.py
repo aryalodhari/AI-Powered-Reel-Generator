@@ -1,8 +1,14 @@
 from flask import Flask
 from app.routes import main
 
+
 app = Flask(__name__)
+
+UPLOAD_FOLDER = 'user_uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 app.register_blueprint(main)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
