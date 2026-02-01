@@ -31,6 +31,9 @@ def create():
                 filename = secure_filename(file.filename)
                 os.mkdir(os.path.join(current_app.config['UPLOAD_FOLDER'], rec_id))
                 file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], rec_id, filename))
+            # capture the text and save it to the file
+            with open(os.path.join(current_app.config['UPLOAD_FOLDER'], rec_id,"text.txt"),"w") as f:
+                f.write(text)
 
     return render_template("create.html", my_id=my_id)
 
