@@ -1,51 +1,53 @@
-
 import os
-import uuid
 from dotenv import load_dotenv
 from elevenlabs import VoiceSettings
 from elevenlabs.client import ElevenLabs
 
 load_dotenv()
 
-ELEVENLABS_API_KEY = "sk_eb97b4786d5d4de59e5b17dbfc9909f74d7a5a264af88e0a"
-elevenlabs = ElevenLabs(
-    api_key=ELEVENLABS_API_KEY,
-)
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+
+if not ELEVENLABS_API_KEY:
+    raise ValueError("❌ ELEVENLABS_API_KEY not found in .env")
+
+elevenlabs = ElevenLabs(api_key=ELEVENLABS_API_KEY)
 
 
 def text_to_speech_file(text: str, folder: str) -> str:
-    # Calling the text_to_speech conversion API with detailed parameters
-    response = elevenlabs.text_to_speech.convert(
-        voice_id="pNInz6obpgDQGcFmaJgB", # Adam pre-made voice
-        output_format="mp3_22050_32",
-        text=text,
-        model_id="eleven_turbo_v2_5", # use the turbo model for low latency
-        # Optional voice settings that allow you to customize the output
-        voice_settings=VoiceSettings(
-            stability=0.0,
-            similarity_boost=1.0,
-            style=0.0,
-            use_speaker_boost=True,
-            speed=1.0,
-        ),
-    )
+    if not text or not text.strip():
+        print("❌ Empty text — skipping audio generation")
+        return ""
 
-    # uncomment the line below to play the audio back
-    # play(response)
+    save_dir = os.path.join("user_uploads", folder)
+    os.makedirs(save_dir, exist_ok=True)
 
-    # Generating a unique file name for the output MP3 file
-    save_file_path = os.path.join(f"user_uploads/{folder}", "audio.mp3")
+    save_file_path = os.path.join(save_dir, "audio.mp3")
 
-    # Writing the audio to a file
-    with open(save_file_path, "wb") as f:
-        for chunk in response:
-            if chunk:
-                f.write(chunk)
+    print("🎙 Generating audio...")
 
-    print(f"{save_file_path}: A new audio file was saved successfully!")
+    try:
+        response = elevenlabs.text_to_speech.convert(
+            voice_id="pNInz6obpgDQGcFmaJgB",
+            output_format="mp3_22050_32",
+            text=text,
+            model_id="eleven_turbo_v2_5",
+            voice_settings=VoiceSettings(
+                stability=0.3,
+                similarity_boost=0.8,
+                style=0.0,
+                use_speaker_boost=True,
+                speed=1.0,
+            ),
+        )
 
-    # Return the path of the saved audio file
-    return save_file_path
+        with open(save_file_path, "wb") as f:
+            for chunk in response:
+                if chunk:
+                    f.write(chunk)
 
-# text_to_speech_file("Hey i am arya and i am learning python", "720f3a5d-fe99-11f0-8ca3-84699372bcd9")
+        print(f"✅ Audio saved: {save_file_path}")
+        return save_file_path
 
+    except Exception as e:
+        print("❌ ElevenLabs error:", e)
+        return ""

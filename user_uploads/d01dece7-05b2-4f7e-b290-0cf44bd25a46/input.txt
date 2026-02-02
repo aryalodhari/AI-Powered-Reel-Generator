@@ -1,0 +1,10 @@
+file 'user_uploads/d01dece7-05b2-4f7e-b290-0cf44bd25a46/1.jpg'
+duration 1
+file 'user_uploads/d01dece7-05b2-4f7e-b290-0cf44bd25a46/2.jpg'
+duration 1
+file 'user_uploads/d01dece7-05b2-4f7e-b290-0cf44bd25a46/3.jpg'
+duration 1
+file 'user_uploads/d01dece7-05b2-4f7e-b290-0cf44bd25a46/4.jpg'
+duration 1
+file 'user_uploads/d01dece7-05b2-4f7e-b290-0cf44bd25a46/5.jpg'
+duration 1
